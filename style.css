@@ -1,0 +1,30 @@
+*{
+    padding: 0px;
+    margin: 0px;
+}
+body{
+    padding: 10px;
+}
+#main-table{
+    padding: 10px;
+    border-collapse: collapse;
+}
+th,td{
+    box-sizing: border-box;
+    border: 1px solid black;
+    min-width: 80px;
+}
+td{
+    outline: none;
+    padding: 2px;
+}
+div{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2px;
+}
+.btn{
+    background-color: transparent;
+    padding: 4px;
+}
