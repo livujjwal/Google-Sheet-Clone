@@ -13,15 +13,20 @@ const rightButton = document.querySelector("#right-btn");
 const cutButton = document.querySelector("#cut-btn");
 const copyButton = document.querySelector("#copy-btn");
 const pasteButton = document.querySelector("#paste-btn");
-const fontFamliyDropdown = document.getElementById('font-famliy-dropdown');
-const fontSizeDropdown = document.getElementById('font-size-dropdown');
-const bgColor = document.getElementById('bg-color');
-const fontColor = document.getElementById('font-color');
+const downloadButton = document.querySelector("#download-btn");
+
+const fontFamliyDropdown = document.getElementById("font-famliy-dropdown");
+const fontSizeDropdown = document.getElementById("font-size-dropdown");
+const bgColor = document.getElementById("bg-color");
+const fontColor = document.getElementById("font-color");
+const uploadInput = document.getElementById("upload-input");
 //varaible
 const COLs = 26;
 const ROWs = 100;
 let currentCell;
 let previousCell;
+let cutCell;
+let matrix = new Array(ROWs);;
 const transparent = "transparent";
 const lightBlue = "#dddfff";
 
@@ -35,6 +40,7 @@ function addTableHead(cellType, rowType, rowNum) {
       cell.setAttribute("id", String.fromCharCode(i + 65));
     } else {
       cell.setAttribute("id", `${String.fromCharCode(i + 65)}${rowNum}`);
+cell.addEventListener('focusout',updateMatrix)
       cell.setAttribute("contenteditable", true);
       cell.addEventListener("focus", (event) => focusCellID(event.target));
     }
@@ -61,12 +67,13 @@ function focusCellID(cell) {
       transparent
     );
   }
+
   function buttonStyle(btn, property, styling) {
-  if (currentCell.style[property] == styling) {
-        btn.style.backgroundColor = lightBlue;
-      } else {
-        btn.style.backgroundColor = transparent;
-      }
+    if (currentCell.style[property] == styling) {
+      btn.style.backgroundColor = lightBlue;
+    } else {
+      btn.style.backgroundColor = transparent;
+    }
   }
   buttonStyle(boldButton, "fontWeight", "bold");
   buttonStyle(italicButton, "fontStyle", "italic");
@@ -92,40 +99,119 @@ function addTableBody() {
 addTableBody();
 
 //addTextStyle
-function addTextStyle(btn,property,styling,defalt){
+function addTextStyle(btn, property, styling, defalt) {
   btn.addEventListener("click", () => {
-    if(currentCell.style[property] == styling)
-     {
+    if (currentCell.style[property] == styling) {
       currentCell.style[property] = defalt;
-     btn.style.backgroundColor = transparent;
-    }else{
+      btn.style.backgroundColor = transparent;
+    } else {
       currentCell.style[property] = styling;
-     btn.style.backgroundColor = lightBlue;
+      btn.style.backgroundColor = lightBlue;
     }
-  })
+    updateMatrix();
+  });
 }
-addTextStyle(boldButton, "fontWeight", "bold",'normal');
-addTextStyle(italicButton, "fontStyle", "italic",'normal');
-addTextStyle(underlineButton, "textDecoration", "underline",'none');
+addTextStyle(boldButton, "fontWeight", "bold", "normal");
+addTextStyle(italicButton, "fontStyle", "italic", "normal");
+addTextStyle(underlineButton, "textDecoration", "underline", "none");
 
 //addTextAlign
-function addTextAlign(btn,styling){
-  btn.addEventListener('click', () => {
-    currentCell.style.textAlign = styling
-  })
+function addTextAlign(btn, styling) {
+  btn.addEventListener("click", () => {
+    currentCell.style.textAlign = styling;
+    updateMatrix();
+  });
 }
-addTextAlign(centerButton,'center');
-addTextAlign(leftButton,'left');
-addTextAlign(rightButton,'right');
+addTextAlign(centerButton, "center");
+addTextAlign(leftButton, "left");
+addTextAlign(rightButton, "right");
 
 //Dropdown and inputcolor
-function addDropdownFunction(list,property){
-  list.addEventListener('input',() => {
+function addDropdownFunction(list, property) {
+  list.addEventListener("input", () => {
     currentCell.style[property] = `${list.value}`;
-  })
-
+    updateMatrix();
+  });
 }
-addDropdownFunction(fontFamliyDropdown,'fontFamily');
-addDropdownFunction(fontSizeDropdown,'fontSize');
-addDropdownFunction(bgColor,'backgroundColor');
-addDropdownFunction(fontColor,'color');
+addDropdownFunction(fontFamliyDropdown, "fontFamily");
+addDropdownFunction(fontSizeDropdown, "fontSize");
+addDropdownFunction(bgColor, "backgroundColor");
+addDropdownFunction(fontColor, "color");
+
+//cut copy
+
+function addCutCopy(Btn, typeofBtn) {
+  Btn.addEventListener("click", () => {
+    cutCell = {
+      text: currentCell.innerText,
+      style: currentCell.style.cssText,
+      btn: "cut",
+    };
+    if (typeofBtn === "cut") currentCell.innerText = "";
+    currentCell.style.cssText = "";
+    updateMatrix();
+  });
+}
+addCutCopy(cutButton, "cut");
+addCutCopy(copyButton, "copy");
+
+//paste
+pasteButton.addEventListener("click", () => {
+  currentCell.innerText = cutCell.text;
+  currentCell.style = cutCell.style;
+  if (cutCell.btn === "cut") {
+    cutCell = undefined;
+  }
+  updateMatrix()
+});
+
+
+//creatematrix virtual sheet
+function createMatrix(){
+  for (let row = 0; row < ROWs; row++) {
+    matrix[row] = new Array(COLs);
+    for (let col = 0; col < COLs; col++) {
+      matrix[row][col] = {};
+    }
+  }
+  // console.log(matrix);
+}
+createMatrix();
+
+//updateMatrix
+function updateMatrix(){
+ let id = currentCell.id;
+ let row = id.substring(1);
+ let col = id[0].charCodeAt(0) - 65;
+//  console.log(row,col);
+matrix[row][col] = {
+  text: currentCell.innerText,
+  style: currentCell.style.cssText,
+  id: id
+}
+// console.log(matrix[row][col]);
+}
+
+//downloadMatrix
+function downloadMatrix(){
+  const matrixString = JSON.stringify(matrix);
+  const blob = new Blob([matrixString],{type : 'application/json'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'table.json';
+  link.click()
+}
+downloadButton.addEventListener('click', downloadMatrix);
+
+//uploadMatrix
+function uploadMatrix(event){
+  const file = event.target.files[0];
+  if (file) {
+    let reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = function(event){
+      const fileContent = JSON.parse(event.target.result);
+    }
+  }
+}
+uploadInput.addEventListener('input',uploadMatrix);
