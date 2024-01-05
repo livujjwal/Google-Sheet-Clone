@@ -2,12 +2,84 @@
     padding: 0px;
     margin: 0px;
 }
-body{
+h1{
+    font-weight: 100;
+    font-size: 20px;
+    padding: 5px;
+}
+#vertical-line{
+    display: block;
+    border-right: 1px solid black;
+}
+#navbar{
+    position: sticky;
+    top: 0px;
+    z-index: 40;
     padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color:white;
+
+}
+#nav-left,#nav-right{
+    gap: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#nav-left-2{
+    display: flex;
+    flex-direction: column;
+    
+}
+#nav-left-2-up{
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+#nav-left-2-down{
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+#sheet-name{
+    padding: 2px;
+    border: none;
+    outline: none;
+}
+#share{
+    padding: 10px;
+    gap: 10px;
+    background-color: #C2E7FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+}
+body{
+    /* padding: 10px; */
+}
+#btn-section{
+    width: 100vw;
+    padding-inline: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: sticky;
+    top: 64px;
+    z-index: 20;
+    background-color: white;
 }
 #main-table{
     padding: 10px;
+    z-index: -20;
     border-collapse: collapse;
+}
+#current-cell-heading{
+    position: relative;
+    top: 0px;
+    background-color: white;
 }
 th,td{
     box-sizing: border-box;
@@ -26,5 +98,25 @@ div{
 }
 .btn{
     background-color: transparent;
-    padding: 4px;
+    border: none;
+    padding: 5px;
+    transition: all 0.1s ease-out;
+}
+#btn-div{
+    width: 95vw;
+    position: sticky;
+    top: 80px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 10px;
+    border-radius: 20px;
+    background-color: #EDF2FA;
+
+}
+.btn:hover{
+    box-sizing: border-box;
+    background-color: rgb(218,220,224);
+    cursor: pointer;
+    border-radius: 5px;
 }

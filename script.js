@@ -2,7 +2,7 @@ const table = document.getElementById("main-table");
 const tHeadRow = document.getElementById("thead-row");
 const tBody = document.getElementById("table-body");
 const currentCellHeading = document.getElementById("current-cell-heading");
-
+const namingSheet = document.getElementById("sheet-name")
 //button initialise
 const boldButton = document.querySelector("#bold-btn");
 const italicButton = document.querySelector("#italic-btn");
@@ -29,6 +29,8 @@ let cutCell;
 let matrix = new Array(ROWs);;
 const transparent = "transparent";
 const lightBlue = "#dddfff";
+
+
 
 //addTableHead
 function addTableHead(cellType, rowType, rowNum) {
